@@ -81,12 +81,12 @@ setMethod("esBy", "NanoStringRccSet", function(X, GROUP, FUN, ..., simplify = TR
         else FUN(X[, keep], ...)
     }, simplify = simplify)
 })
-setMethod("transform", "NanoStringRccSet", function(`_data`, ...) {
+setMethod("transform", "NanoStringRccSet", function(x, ...) {
     exprs <- as.list(substitute(list(...))[-1L])
     if (any(names(exprs) == "")) {
         stop("all arguments in '...' must be named")
     }
-    aData <- assayData(`_data`)
+    aData <- assayData(x)
     isLocked <- environmentIsLocked(aData)
     if (isLocked) {
         aData <- copyEnv(aData)
@@ -96,10 +96,10 @@ setMethod("transform", "NanoStringRccSet", function(`_data`, ...) {
     }
     if (isLocked) {
         lockEnvironment(aData)
-        assayData(`_data`) <- aData
+        assayData(x) <- aData
     }
-    preproc(`_data`)[names(exprs)] <- exprs
-    `_data`
+    preproc(x)[names(exprs)] <- exprs
+    x
 })
 setMethod("with", "NanoStringRccSet", function(data, expr, ...) eval(substitute(expr), 
     as(data, "list"), parent.frame()))
